@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, Adam <Adam@sigterm.info>
+ * Copyright (c) 2018, Jasper Ketelaar <Jasper0781@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,87 +22,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.api.coords;
+package net.runelite.client.plugins.mta;
 
-/**
- * Represents the four main cardinal points.
- */
-public enum Direction
+import java.awt.Graphics2D;
+import javax.inject.Inject;
+import lombok.AccessLevel;
+import lombok.Getter;
+
+public abstract class MTARoom
 {
-	/**
-	 * Angles ranging from 768 - 1279.
-	 */
-	NORTH,
+	@Getter(AccessLevel.PACKAGE)
+	private final MTAConfig config;
 
-	/**
-	 * Angles ranging from 1792 - 2047 and 0 - 255.
-	 */
-	SOUTH,
-
-	/**
-	 * Angles ranging from 1280 - 1791.
-	 */
-	EAST,
-
-	/**
-	 * Angles ranging from 256 - 767.
-	 */
-	WEST;
-
-	/**
-	 * Transform an orientation value to a direction value
-	 *
-	 * @param orientation The orientation value that you want to know the direction for
-	 * @return Returns the direction
-	 */
-	public static Direction fromOrientation(int orientation)
+	@Inject
+	public MTARoom(MTAConfig config)
 	{
-		int angle = orientation / 255;
-		switch (angle)
-		{
-			case 0:
-			case 7:
-				return SOUTH;
-
-			case 1:
-			case 2:
-				return WEST;
-
-			case 3:
-			case 4:
-				return NORTH;
-
-			case 5:
-			case 6:
-				return EAST;
-
-			default:
-				throw new IllegalArgumentException("Orientation can not be higher than 2047 or negative");
-		}
+		this.config = config;
 	}
 
-	/**
-	 * Gets the opposite direction of this instance
-	 *
-	 * @return Returns the opposite direction
-	 */
-	public Direction getOpposite()
+	public abstract boolean inside();
+
+	public void under(Graphics2D graphics2D)
 	{
-		switch (this)
-		{
-			case NORTH:
-				return SOUTH;
 
-			case SOUTH:
-				return NORTH;
+	}
 
-			case EAST:
-				return WEST;
+	public void over(Graphics2D graphics2D)
+	{
 
-			case WEST:
-				return EAST;
-		}
-
-		return null;
 	}
 }

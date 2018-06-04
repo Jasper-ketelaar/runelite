@@ -24,6 +24,7 @@
  */
 package net.runelite.api.coords;
 
+import java.util.ArrayList;
 import java.util.function.Predicate;
 import lombok.Getter;
 import net.runelite.api.Client;
@@ -642,5 +643,24 @@ public class WorldArea
 	public WorldPoint toWorldPoint()
 	{
 		return new WorldPoint(x, y, plane);
+	}
+
+	/**
+	 * Accumulates all the WorldPoints that this WorldArea contains and returns them as a list
+	 *
+	 * @return Returns the WorldPoints in this WorldArea
+	 */
+	public ArrayList<WorldPoint> toWorldPointList()
+	{
+		ArrayList<WorldPoint> list = new ArrayList<>();
+		for (int x = 0; x < width; x++)
+		{
+			for (int y = 0; y < height; y++)
+			{
+				list.add(new WorldPoint(getX() + x, getY() + y, getPlane()));
+			}
+		}
+
+		return list;
 	}
 }
