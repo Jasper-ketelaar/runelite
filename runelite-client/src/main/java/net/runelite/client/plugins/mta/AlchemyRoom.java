@@ -81,7 +81,7 @@ public class AlchemyRoom extends MTARoom
 
 	@Inject
 	public AlchemyRoom(Client client, MTAConfig config, MTAPlugin plugin, ItemManager itemManager,
-					   InfoBoxManager infoBoxManager)
+	                   InfoBoxManager infoBoxManager)
 	{
 		super(config);
 		this.client = client;

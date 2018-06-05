@@ -59,7 +59,7 @@ public class EnchantmentRoom extends MTARoom
 
 	@Inject
 	public EnchantmentRoom(MTAConfig config, MTAPlugin plugin, Client client, ItemManager itemManager,
-						   InfoBoxManager infoBoxManager)
+	                       InfoBoxManager infoBoxManager)
 	{
 		super(config);
 		this.plugin = plugin;
