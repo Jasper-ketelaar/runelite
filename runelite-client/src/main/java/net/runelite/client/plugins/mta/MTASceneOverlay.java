@@ -48,6 +48,7 @@ public class MTASceneOverlay extends Overlay
 	public Dimension render(Graphics2D graphics)
 	{
 		graphics.setFont(FontManager.getRunescapeFont());
+
 		for (MTARoom room : plugin.getRooms())
 		{
 			if (room.inside())

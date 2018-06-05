@@ -48,21 +48,24 @@ public class EnchantmentRoom extends MTARoom
 
 	private static final int IMAGE_START_ID = 4;
 	private static final int IMAGE_END_ID = 12;
+
+	private final InfoBoxManager infoBoxManager;
+	private final ItemManager itemManager;
 	private final MTAPlugin plugin;
 	private final Client client;
-	@Inject
-	private ItemManager itemManager;
-	@Inject
-	private InfoBoxManager infoBoxManager;
+
 	private Counter counter;
 	private BufferedImage image;
 
 	@Inject
-	public EnchantmentRoom(MTAConfig config, MTAPlugin plugin, Client client)
+	public EnchantmentRoom(MTAConfig config, MTAPlugin plugin, Client client, ItemManager itemManager,
+						   InfoBoxManager infoBoxManager)
 	{
 		super(config);
 		this.plugin = plugin;
 		this.client = client;
+		this.itemManager = itemManager;
+		this.infoBoxManager = infoBoxManager;
 	}
 
 	@Subscribe
@@ -80,6 +83,7 @@ public class EnchantmentRoom extends MTARoom
 				infoBoxManager.removeIf(e -> e.getPlugin() instanceof MTAPlugin);
 				this.counter = null;
 			}
+
 			return;
 		}
 		else if (counter == null)
@@ -88,12 +92,10 @@ public class EnchantmentRoom extends MTARoom
 			infoBoxManager.addInfoBox(counter);
 		}
 
-
 		if (getConfig().enchantment())
 		{
 			setHiddenWidgets(true);
 		}
-
 
 		Region region = client.getRegion();
 		Tile[][][] tiles = region.getTiles();
@@ -102,11 +104,13 @@ public class EnchantmentRoom extends MTARoom
 		Player local = client.getLocalPlayer();
 		WorldPoint nearest = null;
 		double min = Double.MAX_VALUE;
+
 		for (int x = 0; x < tiles[z].length; x++)
 		{
 			for (int y = 0; y < tiles[z][x].length; y++)
 			{
 				Tile tile = tiles[z][x][y];
+
 				if (tile == null || tile.getGroundItems() == null)
 				{
 					continue;
@@ -123,11 +127,13 @@ public class EnchantmentRoom extends MTARoom
 							min = dist;
 							nearest = tile.getWorldLocation();
 						}
+
 						count++;
 					}
 				}
 			}
 		}
+
 		if (nearest != null && getConfig().mtaHintArrows())
 		{
 			client.setHintArrow(nearest);
@@ -136,7 +142,6 @@ public class EnchantmentRoom extends MTARoom
 		this.counter.setText(String.valueOf(count));
 		this.counter.setTooltip(String.format("%s dragonstones are spawned", count));
 	}
-
 
 	@Subscribe
 	public void onConfigChanged(ConfigChanged event)
@@ -161,14 +166,17 @@ public class EnchantmentRoom extends MTARoom
 	public void setHiddenWidgets(boolean hide)
 	{
 		Widget text = client.getWidget(WidgetInfo.MTA_ENCHANTMENT_BONUS_TEXT);
+
 		for (int i = IMAGE_START_ID; i < IMAGE_END_ID; i++)
 		{
 			Widget image = client.getWidget(WidgetID.MTA_ENCHANTMENT_GROUP_ID, i);
+
 			if (image != null)
 			{
 				image.setHidden(hide);
 			}
 		}
+
 		if (text != null)
 		{
 			text.setHidden(hide);

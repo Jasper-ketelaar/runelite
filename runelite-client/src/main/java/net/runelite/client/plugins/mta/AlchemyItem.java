@@ -24,11 +24,11 @@
  */
 package net.runelite.client.plugins.mta;
 
+import lombok.Getter;
 import net.runelite.api.ItemID;
 
 public enum AlchemyItem
 {
-
 	LEATHER_BOOTS("Leather boots", ItemID.LEATHER_BOOTS),
 	ADAMANT_KITESHIELD("Adamant kiteshield", ItemID.ADAMANT_KITESHIELD),
 	ADAMANT_MED_HELM("helm", ItemID.ADAMANT_MED_HELM),
@@ -37,7 +37,9 @@ public enum AlchemyItem
 	EMPTY("", -1),
 	UNKNOWN("Unknown", ItemID.CAKE_OF_GUIDANCE);
 
+	@Getter
 	private final int id;
+	@Getter
 	private final String name;
 
 	AlchemyItem(String name, int id)
@@ -46,22 +48,10 @@ public enum AlchemyItem
 		this.name = name;
 	}
 
-	public static AlchemyItem forName(String name)
-	{
-		for (AlchemyItem item : values())
-		{
-			if (name.contains(item.getName()))
-			{
-				return item;
-			}
-		}
-
-		return null;
-	}
-
 	public static int indexOf(String item)
 	{
 		AlchemyItem[] items = values();
+
 		for (int i = 0; i < items.length; i++)
 		{
 			if (item.contains(items[i].getName()))
@@ -73,20 +63,11 @@ public enum AlchemyItem
 		return -1;
 	}
 
-	public int getId()
-	{
-		return id;
-	}
-
-	public String getName()
-	{
-		return name;
-	}
-
 	@Override
 	public String toString()
 	{
 		String text = getName();
+
 		if (text.equals("helm"))
 		{
 			return "Adamant Helm";

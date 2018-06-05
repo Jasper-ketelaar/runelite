@@ -84,6 +84,7 @@ public class GraveyardRoom extends MTARoom
 		{
 			this.bonesImage = itemManager.getImage(ItemID.ANIMALS_BONES);
 		}
+
 		if (!inside() || !getConfig().graveyard())
 		{
 			if (this.counter != null)
@@ -91,6 +92,7 @@ public class GraveyardRoom extends MTARoom
 				infoBoxManager.removeIf(e -> e instanceof GraveyardCounter);
 				this.counter = null;
 			}
+
 			return;
 		}
 
@@ -139,10 +141,12 @@ public class GraveyardRoom extends MTARoom
 	public void itemContainerChanged(ItemContainerChanged event)
 	{
 		ItemContainer container = event.getItemContainer();
+
 		if (container == client.getItemContainer(InventoryID.INVENTORY))
 		{
 			this.items = container.getItems();
 			this.score = score();
+
 			if (this.counter != null)
 			{
 				this.counter.setCount(score);
@@ -165,6 +169,7 @@ public class GraveyardRoom extends MTARoom
 	private int score()
 	{
 		int score = 0;
+
 		for (Item item : items)
 		{
 			if (isBone(item.getId()))
@@ -179,7 +184,6 @@ public class GraveyardRoom extends MTARoom
 	private boolean isBone(int id)
 	{
 		int sub = id - BONES_START;
-
 		return sub > 0 && sub <= BONES_TYPES;
 	}
 
@@ -188,6 +192,7 @@ public class GraveyardRoom extends MTARoom
 		for (int i = INFO_WIDGET_START; i <= INFO_WIDGET_END; i++)
 		{
 			Widget image = client.getWidget(WidgetID.MTA_GRAVEYARD_GROUP_ID, i);
+
 			if (image != null)
 			{
 				image.setHidden(hide);

@@ -28,7 +28,6 @@ import net.runelite.api.coords.LocalPoint;
 
 public enum Maze
 {
-
 	MAZE_1(100, new LocalPoint(6848, 3904)),
 	MAZE_2(124, new LocalPoint(4928, 6848)),
 	MAZE_3(129, new LocalPoint(7104, 5312)),

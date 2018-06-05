@@ -70,23 +70,25 @@ public class AlchemyRoom extends MTARoom
 	private final HashMap<AlchemyItem, BufferedImage> IMAGE_MAP = new HashMap<>();
 	private final AlchemyItem[] locations = new AlchemyItem[CAPACITY];
 	private final List<GameObject> cupboards = new ArrayList<>(CAPACITY);
+
 	private final MTAPlugin plugin;
-	@Inject
-	private ItemManager itemManager;
-	@Inject
-	private InfoBoxManager infoBoxManager;
-	private Client client;
+	private final Client client;
+	private final ItemManager itemManager;
+	private final InfoBoxManager infoBoxManager;
+
 	private String best;
 	private int suggest = -1;
 
 	@Inject
-	public AlchemyRoom(Client client, MTAConfig config, MTAPlugin plugin)
+	public AlchemyRoom(Client client, MTAConfig config, MTAPlugin plugin, ItemManager itemManager,
+					   InfoBoxManager infoBoxManager)
 	{
 		super(config);
 		this.client = client;
 		this.plugin = plugin;
+		this.itemManager = itemManager;
+		this.infoBoxManager = infoBoxManager;
 	}
-
 
 	@Subscribe
 	public void onGameTick(GameTick event)
@@ -115,6 +117,7 @@ public class AlchemyRoom extends MTARoom
 				infoBoxManager.removeIf(e -> e instanceof AlchemyRoomTimer);
 				infoBoxManager.addInfoBox(new AlchemyRoomTimer(plugin));
 			}
+
 			best = getBest();
 			reset();
 		}
@@ -163,9 +166,11 @@ public class AlchemyRoom extends MTARoom
 			return;
 
 		GameObject spawn = event.getGameObject();
+
 		for (int i = 0; i < CUPBOARDS.size(); i++)
 		{
 			int id = CUPBOARDS.get(i);
+
 			if (spawn.getId() == id || spawn.getId() - 1 == id)
 			{
 				cupboards.remove(i);
@@ -180,6 +185,7 @@ public class AlchemyRoom extends MTARoom
 			return;
 
 		String message = wrapper.getMessage();
+
 		if (wrapper.getType() == ChatMessageType.SERVER)
 		{
 			if (message.contains(YOU_FOUND))
@@ -228,6 +234,7 @@ public class AlchemyRoom extends MTARoom
 			int index = i + INFO_START;
 
 			Widget textWidget = client.getWidget(WidgetID.MTA_ALCHEMY_GROUP_ID, index);
+
 			if (textWidget == null)
 			{
 				reset();
@@ -235,9 +242,9 @@ public class AlchemyRoom extends MTARoom
 			}
 
 			String item = textWidget.getText().replace(":", "");
-
 			Widget pointsWidget = client.getWidget(WidgetID.MTA_ALCHEMY_GROUP_ID, index + INFO_START);
 			int points = Integer.parseInt(pointsWidget.getText());
+
 			if (points == BEST_POINTS)
 			{
 				return item;
@@ -261,6 +268,7 @@ public class AlchemyRoom extends MTARoom
 
 			WorldPoint mine = client.getLocalPlayer().getWorldLocation();
 			double objectDistance = object.getWorldLocation().distanceTo(mine);
+
 			if (nearest == null || distance > objectDistance)
 			{
 				nearest = object;
@@ -273,9 +281,9 @@ public class AlchemyRoom extends MTARoom
 
 	private void fill(int index, String item)
 	{
-		int start = AlchemyItem.indexOf(item);
 		int distance = 8 - index;
-		start = (start + distance) % 8;
+		int start = (AlchemyItem.indexOf(item) + distance) % 8;
+
 		for (int i = 0; i < CAPACITY; i++)
 		{
 			int itemIndex = (start + i) % 8;
@@ -294,16 +302,19 @@ public class AlchemyRoom extends MTARoom
 		for (int i = 0; i < cupboards.size(); i++)
 		{
 			GameObject cupboard = cupboards.get(i);
+
 			if (cupboard == null || i >= CAPACITY)
 			{
 				continue;
 			}
 
 			AlchemyItem location = locations[i];
+
 			if (location == AlchemyItem.EMPTY)
 				continue;
 
 			String text = location.toString();
+
 			if (text.equals(best))
 			{
 				if (getConfig().mtaHintArrows())
@@ -316,6 +327,7 @@ public class AlchemyRoom extends MTARoom
 			{
 				BufferedImage image = IMAGE_MAP.get(location);
 				Point canvasLoc = Perspective.getCanvasImageLocation(client, graphics, cupboard.getLocalLocation(), image, IMAGE_Z_OFFSET);
+
 				if (canvasLoc != null)
 				{
 					graphics.drawImage(image, canvasLoc.getX(), canvasLoc.getY(), null);
@@ -325,6 +337,7 @@ public class AlchemyRoom extends MTARoom
 			else
 			{
 				Point canvasLoc = Perspective.getCanvasTextLocation(client, graphics, cupboard.getLocalLocation(), text, TEXT_Z_OFFSET);
+
 				if (canvasLoc != null)
 				{
 					graphics.setColor(new Color(50, 50, 50));
@@ -345,6 +358,7 @@ public class AlchemyRoom extends MTARoom
 			if (!suggest(suggest))
 			{
 				int index = (suggest + 3) % CAPACITY;
+
 				if (!suggest(index))
 				{
 					suggest = -1;
@@ -365,6 +379,7 @@ public class AlchemyRoom extends MTARoom
 				{
 					ItemComposition composition = client.getItemDefinition(item.getId());
 					String temp = best;
+
 					if (temp.equals("Adamant Helm"))
 					{
 						temp = "adamant med helm";
@@ -382,6 +397,7 @@ public class AlchemyRoom extends MTARoom
 	private boolean suggest(int index)
 	{
 		AlchemyItem item = locations[index];
+
 		if (item == AlchemyItem.UNKNOWN && getConfig().mtaHintArrows())
 		{
 			client.setHintArrow(cupboards.get(index).getWorldLocation());

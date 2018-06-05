@@ -47,6 +47,7 @@ public class MTAInventoryOverlay extends Overlay
 	public Dimension render(Graphics2D graphics)
 	{
 		graphics.setFont(FontManager.getRunescapeBoldFont());
+
 		for (MTARoom room : plugin.getRooms())
 		{
 			if (room.inside())

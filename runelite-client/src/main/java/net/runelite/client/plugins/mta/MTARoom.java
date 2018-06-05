@@ -44,11 +44,9 @@ public abstract class MTARoom
 
 	public void under(Graphics2D graphics2D)
 	{
-
 	}
 
 	public void over(Graphics2D graphics2D)
 	{
-
 	}
 }

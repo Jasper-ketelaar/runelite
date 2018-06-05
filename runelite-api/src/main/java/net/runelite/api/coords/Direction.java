@@ -63,19 +63,15 @@ public enum Direction
 			case 0:
 			case 7:
 				return SOUTH;
-
 			case 1:
 			case 2:
 				return WEST;
-
 			case 3:
 			case 4:
 				return NORTH;
-
 			case 5:
 			case 6:
 				return EAST;
-
 			default:
 				throw new IllegalArgumentException("Orientation can not be higher than 2047 or negative");
 		}
@@ -92,13 +88,10 @@ public enum Direction
 		{
 			case NORTH:
 				return SOUTH;
-
 			case SOUTH:
 				return NORTH;
-
 			case EAST:
 				return WEST;
-
 			case WEST:
 				return EAST;
 		}

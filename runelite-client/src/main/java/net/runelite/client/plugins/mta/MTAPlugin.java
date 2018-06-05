@@ -47,7 +47,6 @@ import net.runelite.client.ui.overlay.Overlay;
 @PluginDescriptor(name = "Mage Training Arena")
 public class MTAPlugin extends Plugin
 {
-
 	public static final Color TRANSPARENT_GREEN = new Color(0, 255, 0, 102);
 	public static final Color TRANSPARENT_ORANGE = new Color(255, 165, 0, 102);
 
@@ -95,6 +94,7 @@ public class MTAPlugin extends Plugin
 	public void startUp()
 	{
 		this.rooms = new MTARoom[] {alchemyRoom, graveyardRoom, telekineticRoom, enchantmentRoom};
+
 		for (MTARoom room : rooms)
 		{
 			eventBus.register(room);

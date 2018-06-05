@@ -62,17 +62,16 @@ import net.runelite.api.widgets.WidgetID;
 
 public class TelekineticRoom extends MTARoom
 {
-
 	private final Client client;
+
 	private Stack<Direction> moves = new Stack<>();
+	private LocalPoint destination;
+	private LocalPoint location;
+	private WorldPoint nearest;
+	private Rectangle bounds;
 	private NPC guardian;
 	private Maze maze;
-	private Rectangle bounds;
-	private LocalPoint location;
 	private boolean valid;
-	private WorldArea area;
-	private WorldPoint nearest;
-	private LocalPoint destination;
 
 	@Inject
 	public TelekineticRoom(MTAConfig config, Client client)
@@ -123,12 +122,14 @@ public class TelekineticRoom extends MTARoom
 
 			//Prevent unnecessary updating when the guardian has not moved
 			LocalPoint current = guardian.getLocalLocation();
+
 			if (current.equals(location))
 			{
 				return;
 			}
 
 			location = current;
+
 			if (location.equals(finish()))
 			{
 				client.clearHintArrow();
@@ -146,33 +147,11 @@ public class TelekineticRoom extends MTARoom
 		}
 	}
 
-	private void calculateStandingTiles()
-	{
-		area = getIndicatorLine(moves.peek());
-		if (area != null)
-		{
-			double nearestDist = Double.MAX_VALUE;
-			Player local = client.getLocalPlayer();
-			for (WorldPoint point : area.toWorldPointList())
-			{
-				LocalPoint converted = LocalPoint.fromWorld(client, point);
-				if (converted != null)
-				{
-					double dist = local.getLocalLocation().distanceTo(converted);
-					if (nearest == null || dist < nearestDist)
-					{
-						nearest = point;
-						nearestDist = dist;
-					}
-				}
-			}
-		}
-	}
-
 	@Subscribe
 	public void onProjectileMoved(ProjectileMoved event)
 	{
 		Projectile projectile = event.getProjectile();
+
 		if (projectile.getId() == ProjectileID.TELEKINETIC_SPELL)
 		{
 			if (validatePosition(moves.peek()))
@@ -182,6 +161,7 @@ public class TelekineticRoom extends MTARoom
 			else
 			{
 				Direction mine = getPosition();
+
 				if (mine != null)
 				{
 					LocalPoint local = neighbour(guardian.getLocalLocation(), mine);
@@ -195,6 +175,7 @@ public class TelekineticRoom extends MTARoom
 	public void onNpcSpawned(NpcSpawned event)
 	{
 		NPC npc = event.getNpc();
+
 		if (npc.getId() == NpcID.MAZE_GUARDIAN)
 		{
 			guardian = npc;
@@ -206,6 +187,7 @@ public class TelekineticRoom extends MTARoom
 	public void onNpcDespawned(NpcDespawned event)
 	{
 		NPC npc = event.getNpc();
+
 		if (npc.getId() == NpcID.MAZE_GUARDIAN)
 		{
 			guardian = null;
@@ -239,7 +221,29 @@ public class TelekineticRoom extends MTARoom
 					graphics2D.setColor(Color.RED);
 				}
 
-				calculateStandingTiles();
+				WorldArea area = getIndicatorLine(moves.peek());
+
+				if (area != null)
+				{
+					double nearestDist = Double.MAX_VALUE;
+					Player local = client.getLocalPlayer();
+
+					for (WorldPoint point : area.toWorldPointList())
+					{
+						LocalPoint converted = LocalPoint.fromWorld(client, point);
+
+						if (converted != null)
+						{
+							double dist = local.getLocalLocation().distanceTo(converted);
+
+							if (nearest == null || dist < nearestDist)
+							{
+								nearest = point;
+								nearestDist = dist;
+							}
+						}
+					}
+				}
 
 				Polygon tile = Perspective.getCanvasTilePoly(client, guardian.getLocalLocation());
 				if (tile != null)
@@ -249,7 +253,6 @@ public class TelekineticRoom extends MTARoom
 
 				if (getConfig().telekineticLines() && area != null)
 				{
-
 					for (WorldPoint point : area.toWorldPointList())
 					{
 						if (getConfig().telekineticLines())
@@ -265,6 +268,7 @@ public class TelekineticRoom extends MTARoom
 					{
 						client.setHintArrow(nearest);
 					}
+
 					renderWorldPoint(graphics2D, nearest);
 				}
 			}
@@ -327,13 +331,16 @@ public class TelekineticRoom extends MTARoom
 
 			LocalPoint localNext = LocalPoint.fromWorld(client, next);
 			LocalPoint[] neighbours = neighbours(localNext);
+
 			for (LocalPoint neighbour : neighbours)
 			{
 				WorldPoint nghbWorld = WorldPoint.fromLocal(client, neighbour);
+
 				if (!nghbWorld.equals(next)
 						&& !closed.contains(nghbWorld))
 				{
 					int score = scores.get(next) + 1;
+
 					if (!scores.containsKey(nghbWorld) || scores.get(nghbWorld) > score)
 					{
 						scores.put(nghbWorld, score);
@@ -351,9 +358,11 @@ public class TelekineticRoom extends MTARoom
 	{
 		Stack<Direction> path = new Stack<>();
 		WorldPoint current = finish;
+
 		while (edges.containsKey(current))
 		{
 			WorldPoint next = edges.get(current);
+
 			if (next.getX() > current.getX())
 			{
 				path.add(Direction.WEST);
@@ -389,23 +398,21 @@ public class TelekineticRoom extends MTARoom
 	private LocalPoint neighbour(LocalPoint point, Direction direction)
 	{
 		int dx = 0, dy = 0;
+
 		switch (direction)
 		{
 			case NORTH:
 				dx = 0;
 				dy = 1;
 				break;
-
 			case SOUTH:
 				dx = 0;
 				dy = -1;
 				break;
-
 			case EAST:
 				dx = 1;
 				dy = 0;
 				break;
-
 			case WEST:
 				dx = -1;
 				dy = 0;
@@ -418,11 +425,11 @@ public class TelekineticRoom extends MTARoom
 
 		int current = flags[x][y];
 		int next = flags[x + dx][y + dy];
+
 		while (!isBlocked(current, next, direction))
 		{
 			x += dx;
 			y += dy;
-
 			current = next;
 			next = flags[x + dx][y + dy];
 		}
@@ -434,30 +441,28 @@ public class TelekineticRoom extends MTARoom
 	{
 		boolean blocked = checkFlag(to, CollisionDataFlag.BLOCK_MOVEMENT_FLOOR)
 				|| checkFlag(to, CollisionDataFlag.BLOCK_MOVEMENT_OBJECT);
+
+		if (blocked)
+		{
+			return true;
+		}
 		switch (direction)
 		{
 			case NORTH:
-				blocked |= checkFlag(from, CollisionDataFlag.BLOCK_MOVEMENT_NORTH)
+				return checkFlag(from, CollisionDataFlag.BLOCK_MOVEMENT_NORTH)
 						|| checkFlag(to, CollisionDataFlag.BLOCK_MOVEMENT_SOUTH);
-				break;
-
 			case SOUTH:
-				blocked |= checkFlag(from, CollisionDataFlag.BLOCK_MOVEMENT_SOUTH)
+				return checkFlag(from, CollisionDataFlag.BLOCK_MOVEMENT_SOUTH)
 						|| checkFlag(to, CollisionDataFlag.BLOCK_MOVEMENT_NORTH);
-				break;
-
 			case EAST:
-				blocked |= checkFlag(from, CollisionDataFlag.BLOCK_MOVEMENT_EAST)
+				return checkFlag(from, CollisionDataFlag.BLOCK_MOVEMENT_EAST)
 						|| checkFlag(to, CollisionDataFlag.BLOCK_MOVEMENT_WEST);
-				break;
-
 			case WEST:
-				blocked |= checkFlag(from, CollisionDataFlag.BLOCK_MOVEMENT_WEST)
+				return checkFlag(from, CollisionDataFlag.BLOCK_MOVEMENT_WEST)
 						|| checkFlag(to, CollisionDataFlag.BLOCK_MOVEMENT_EAST);
-				break;
 		}
 
-		return blocked;
+		return false;
 	}
 
 	private boolean checkFlag(int flag, int mask)
@@ -509,6 +514,7 @@ public class TelekineticRoom extends MTARoom
 	private Direction getPosition()
 	{
 		WorldPoint mine = client.getLocalPlayer().getWorldLocation();
+
 		if (mine.getY() >= bounds.getMaxY() && mine.getX() < bounds.getMaxX() && mine.getX() > bounds.getX())
 		{
 			return Direction.NORTH;
@@ -535,18 +541,14 @@ public class TelekineticRoom extends MTARoom
 		{
 			case NORTH:
 				return new WorldArea(bounds.x + 1, (int) bounds.getMaxY(), bounds.width - 1, 1, 0);
-
 			case SOUTH:
 				return new WorldArea(bounds.x + 1, bounds.y, bounds.width - 1, 1, 0);
-
 			case WEST:
 				return new WorldArea(bounds.x, bounds.y + 1, 1, bounds.height - 1, 0);
-
 			case EAST:
 				return new WorldArea((int) bounds.getMaxX(), bounds.y + 1, 1, bounds.height - 1, 0);
-
-			default:
-				return null;
 		}
+
+		return null;
 	}
 }

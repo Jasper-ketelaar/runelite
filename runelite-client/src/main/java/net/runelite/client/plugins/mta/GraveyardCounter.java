@@ -33,7 +33,6 @@ public class GraveyardCounter extends Counter
 {
 	private int count;
 
-
 	public GraveyardCounter(BufferedImage image, Plugin plugin)
 	{
 		super(image, plugin, "0");
