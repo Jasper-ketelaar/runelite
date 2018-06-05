@@ -58,8 +58,7 @@ public class EnchantmentRoom extends MTARoom
 	private BufferedImage image;
 
 	@Inject
-	public EnchantmentRoom(MTAConfig config, MTAPlugin plugin, Client client, ItemManager itemManager,
-	                       InfoBoxManager infoBoxManager)
+	public EnchantmentRoom(MTAConfig config, MTAPlugin plugin, Client client, ItemManager itemManager, InfoBoxManager infoBoxManager)
 	{
 		super(config);
 		this.plugin = plugin;

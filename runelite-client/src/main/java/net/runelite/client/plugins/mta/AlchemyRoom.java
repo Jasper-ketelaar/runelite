@@ -80,8 +80,7 @@ public class AlchemyRoom extends MTARoom
 	private int suggest = -1;
 
 	@Inject
-	public AlchemyRoom(Client client, MTAConfig config, MTAPlugin plugin, ItemManager itemManager,
-	                   InfoBoxManager infoBoxManager)
+	public AlchemyRoom(Client client, MTAConfig config, MTAPlugin plugin, ItemManager itemManager, InfoBoxManager infoBoxManager)
 	{
 		super(config);
 		this.client = client;
