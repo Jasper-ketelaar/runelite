@@ -121,22 +121,21 @@ public class AlchemyRoom extends MTARoom
 			reset();
 		}
 
-		if (getConfig().mtaHintArrows())
+
+		for (int i = 0; i < locations.length; i++)
 		{
-			for (int i = 0; i < locations.length; i++)
+			AlchemyItem item = locations[i];
+			if (item != null && item.toString().equals(best))
 			{
-				AlchemyItem item = locations[i];
-				if (item != null && item.toString().equals(best))
+				GameObject cupboard = cupboards.get(i);
+				if (cupboard != null)
 				{
-					GameObject cupboard = cupboards.get(i);
-					if (cupboard != null)
-					{
-						client.setHintArrow(cupboard.getWorldLocation());
-						break;
-					}
+					client.setHintArrow(cupboard.getWorldLocation());
+					break;
 				}
 			}
 		}
+
 	}
 
 
@@ -144,7 +143,9 @@ public class AlchemyRoom extends MTARoom
 	public void onGameObjectSpawned(GameObjectSpawned event)
 	{
 		if (!inside())
+		{
 			return;
+		}
 
 		GameObject spawn = event.getGameObject();
 		for (int i = 0; i < CUPBOARDS.size(); i++)
@@ -162,7 +163,9 @@ public class AlchemyRoom extends MTARoom
 	public void onGameObjectDespawned(GameObjectDespawned event)
 	{
 		if (!inside())
+		{
 			return;
+		}
 
 		GameObject spawn = event.getGameObject();
 
@@ -181,7 +184,9 @@ public class AlchemyRoom extends MTARoom
 	public void onChatMessage(ChatMessage wrapper)
 	{
 		if (!inside() || !getConfig().alchemy())
+		{
 			return;
+		}
 
 		String message = wrapper.getMessage();
 
@@ -310,60 +315,44 @@ public class AlchemyRoom extends MTARoom
 			AlchemyItem location = locations[i];
 
 			if (location == AlchemyItem.EMPTY)
+			{
 				continue;
+			}
 
 			String text = location.toString();
 
 			if (text.equals(best))
 			{
-				if (getConfig().mtaHintArrows())
-				{
-					client.setHintArrow(cupboard.getWorldLocation());
-				}
+				client.setHintArrow(cupboard.getWorldLocation());
 			}
 
-			if (getConfig().alchemyIcon())
+
+			BufferedImage image = IMAGE_MAP.get(location);
+			Point canvasLoc = Perspective.getCanvasImageLocation(client, graphics, cupboard.getLocalLocation(), image, IMAGE_Z_OFFSET);
+
+			if (canvasLoc != null)
 			{
-				BufferedImage image = IMAGE_MAP.get(location);
-				Point canvasLoc = Perspective.getCanvasImageLocation(client, graphics, cupboard.getLocalLocation(), image, IMAGE_Z_OFFSET);
+				graphics.drawImage(image, canvasLoc.getX(), canvasLoc.getY(), null);
 
-				if (canvasLoc != null)
-				{
-					graphics.drawImage(image, canvasLoc.getX(), canvasLoc.getY(), null);
-
-				}
 			}
-			else
-			{
-				Point canvasLoc = Perspective.getCanvasTextLocation(client, graphics, cupboard.getLocalLocation(), text, TEXT_Z_OFFSET);
 
-				if (canvasLoc != null)
-				{
-					graphics.setColor(new Color(50, 50, 50));
-					graphics.drawString(text, canvasLoc.getX() + 1, canvasLoc.getY() + 1);
-					graphics.setColor(Color.WHITE);
-					graphics.drawString(text, canvasLoc.getX(), canvasLoc.getY());
-				}
-			}
 		}
 
-		if (getConfig().alchemySuggest())
+		if (suggest == -1)
 		{
-			if (suggest == -1)
-			{
-				suggest = getClicked();
-			}
+			suggest = getClicked();
+		}
 
-			if (!suggest(suggest))
-			{
-				int index = (suggest + 3) % CAPACITY;
+		if (!suggest(suggest))
+		{
+			int index = (suggest + 3) % CAPACITY;
 
-				if (!suggest(index))
-				{
-					suggest = -1;
-				}
+			if (!suggest(index))
+			{
+				suggest = -1;
 			}
 		}
+
 	}
 
 
@@ -397,7 +386,7 @@ public class AlchemyRoom extends MTARoom
 	{
 		AlchemyItem item = locations[index];
 
-		if (item == AlchemyItem.UNKNOWN && getConfig().mtaHintArrows())
+		if (item == AlchemyItem.UNKNOWN)
 		{
 			client.setHintArrow(cupboards.get(index).getWorldLocation());
 			return true;

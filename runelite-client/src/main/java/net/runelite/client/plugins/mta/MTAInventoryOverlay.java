@@ -24,7 +24,8 @@
  */
 package net.runelite.client.plugins.mta;
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
 import javax.inject.Inject;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.overlay.Overlay;

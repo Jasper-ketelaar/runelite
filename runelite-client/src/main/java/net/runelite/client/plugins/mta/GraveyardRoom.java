@@ -24,8 +24,6 @@
  */
 package net.runelite.client.plugins.mta;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import javax.inject.Inject;
 import com.google.common.eventbus.Subscribe;
@@ -39,8 +37,6 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetID;
-import net.runelite.api.widgets.WidgetInfo;
-import net.runelite.api.widgets.WidgetItem;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 
@@ -107,33 +103,6 @@ public class GraveyardRoom extends MTARoom
 		if (getConfig().graveyard())
 		{
 			setHiddenWidgets(true);
-		}
-	}
-
-	@Override
-	public void over(Graphics2D graphics)
-	{
-		if (!getConfig().graveyard() || !getConfig().graveyardInventory())
-		{
-			return;
-		}
-
-		if (!client.getWidget(WidgetInfo.INVENTORY).isHidden())
-		{
-			for (WidgetItem item : client.getWidget(WidgetInfo.INVENTORY).getWidgetItems())
-			{
-				if (isBone(item.getId()))
-				{
-					if (score < MIN_SCORE)
-					{
-						plugin.drawItem(graphics, item, Color.ORANGE, MTAPlugin.TRANSPARENT_ORANGE);
-					}
-					else
-					{
-						plugin.drawItem(graphics, item, Color.GREEN, MTAPlugin.TRANSPARENT_GREEN);
-					}
-				}
-			}
 		}
 	}
 

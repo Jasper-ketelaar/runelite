@@ -35,35 +35,13 @@ import net.runelite.client.config.ConfigItem;
 )
 public interface MTAConfig extends Config
 {
-	@ConfigItem(
-			keyName = "mtaFill",
-			name = "Fill inventory click boxes",
-			description = "This will fill click boxes with a transparent colour instead of just outlining them",
-			position = 0
-	)
 
-	default boolean mtaFill()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-			keyName = "mtaHintArrows",
-			name = "Enable hint arrows",
-			description = "Will draw hint arrows for the rooms that have hint arrow functionality",
-			position = 1
-	)
-
-	default boolean mtaHintArrows()
-	{
-		return true;
-	}
 
 	@ConfigItem(
 			keyName = "alchemy",
 			name = "Enable alchemy room",
 			description = "Configures whether or not the alchemy room overlay is enabled.",
-			position = 2
+			position = 0
 	)
 
 	default boolean alchemy()
@@ -71,35 +49,12 @@ public interface MTAConfig extends Config
 		return true;
 	}
 
-	@ConfigItem(
-			keyName = "alchemyIcon",
-			name = "Draw item icons on the cupboards",
-			description = "Draws the item icons on the cupboards instead of the text",
-			position = 3
-	)
-
-	default boolean alchemyIcon()
-	{
-		return true;
-	}
-
-	@ConfigItem(
-			keyName = "alchemySuggest",
-			name = "Suggest unknown cupboard",
-			description = "Suggests the best cupboard to click on when the room resets and positions are unknown",
-			position = 4
-	)
-
-	default boolean alchemySuggest()
-	{
-		return true;
-	}
 
 	@ConfigItem(
 			keyName = "graveyard",
 			name = "Enable graveyard room",
 			description = "Configures whether or not the graveyard room overlay is enabled.",
-			position = 5
+			position = 1
 	)
 
 	default boolean graveyard()
@@ -108,22 +63,10 @@ public interface MTAConfig extends Config
 	}
 
 	@ConfigItem(
-			keyName = "graveyardInventory",
-			name = "Enable graveyard inventory overlay",
-			description = "Will draw boxes over the inventory items that display ",
-			position = 6
-	)
-
-	default boolean graveyardInventory()
-	{
-		return false;
-	}
-
-	@ConfigItem(
 			keyName = "telekinetic",
 			name = "Enable telekinetic room",
 			description = "Configures whether or not the telekinetic room overlay is enabled.",
-			position = 7
+			position = 2
 	)
 
 	default boolean telekinetic()
@@ -131,23 +74,12 @@ public interface MTAConfig extends Config
 		return true;
 	}
 
-	@ConfigItem(
-			keyName = "telekineticLines",
-			name = "Draw wall lines of where to stand",
-			description = "Will draw lines for the tiles that you are able to cast the spell from",
-			position = 8
-	)
-
-	default boolean telekineticLines()
-	{
-		return false;
-	}
 
 	@ConfigItem(
 			keyName = "enchantment",
 			name = "Enable enchantment room",
 			description = "Configures whether or not the enchantment room overlay is enabled.",
-			position = 9
+			position = 3
 	)
 
 	default boolean enchantment()

@@ -71,17 +71,11 @@ public class MTAPlugin extends Plugin
 	@Getter(AccessLevel.PROTECTED)
 	private MTARoom[] rooms;
 
-	public void drawItem(Graphics2D graphics, WidgetItem item, Color border, Color fill)
+	void drawItem(Graphics2D graphics, WidgetItem item, Color border, Color fill)
 	{
 		Rectangle bounds = item.getCanvasBounds();
 		graphics.setColor(border);
 		graphics.draw(bounds);
-
-		if (config.mtaFill())
-		{
-			graphics.setColor(fill);
-			graphics.fill(bounds);
-		}
 	}
 
 	@Provides

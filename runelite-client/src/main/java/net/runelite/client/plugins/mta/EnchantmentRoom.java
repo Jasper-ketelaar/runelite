@@ -39,9 +39,6 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetID;
 import net.runelite.api.widgets.WidgetInfo;
-import net.runelite.client.game.ItemManager;
-import net.runelite.client.ui.overlay.infobox.Counter;
-import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 
 public class EnchantmentRoom extends MTARoom
 {
@@ -49,47 +46,28 @@ public class EnchantmentRoom extends MTARoom
 	private static final int IMAGE_START_ID = 4;
 	private static final int IMAGE_END_ID = 12;
 
-	private final InfoBoxManager infoBoxManager;
-	private final ItemManager itemManager;
 	private final MTAPlugin plugin;
 	private final Client client;
 
-	private Counter counter;
 	private BufferedImage image;
 
 	@Inject
-	public EnchantmentRoom(MTAConfig config, MTAPlugin plugin, Client client, ItemManager itemManager, InfoBoxManager infoBoxManager)
+	public EnchantmentRoom(MTAConfig config, MTAPlugin plugin, Client client)
 	{
 		super(config);
 		this.plugin = plugin;
 		this.client = client;
-		this.itemManager = itemManager;
-		this.infoBoxManager = infoBoxManager;
 	}
 
 	@Subscribe
 	public void onGameTick(GameTick event)
 	{
-		if (image == null)
-		{
-			image = itemManager.getImage(ItemID.DRAGONSTONE);
-		}
 
 		if (!inside() || !getConfig().enchantment())
 		{
-			if (this.counter != null)
-			{
-				infoBoxManager.removeIf(e -> e.getPlugin() instanceof MTAPlugin);
-				this.counter = null;
-			}
-
 			return;
 		}
-		else if (counter == null)
-		{
-			this.counter = new Counter(image, plugin, "0");
-			infoBoxManager.addInfoBox(counter);
-		}
+
 
 		if (getConfig().enchantment())
 		{
@@ -133,13 +111,10 @@ public class EnchantmentRoom extends MTARoom
 			}
 		}
 
-		if (nearest != null && getConfig().mtaHintArrows())
+		if (nearest != null)
 		{
 			client.setHintArrow(nearest);
 		}
-
-		this.counter.setText(String.valueOf(count));
-		this.counter.setTooltip(String.format("%s dragonstones are spawned", count));
 	}
 
 	@Subscribe
