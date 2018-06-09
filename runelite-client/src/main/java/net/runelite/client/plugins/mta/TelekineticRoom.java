@@ -135,6 +135,14 @@ public class TelekineticRoom extends MTARoom
 			}
 			else
 			{
+				for (Projectile projectile : client.getProjectiles())
+				{
+					if (projectile.getId() == ProjectileID.TELEKINETIC_SPELL)
+					{
+						return;
+					}
+				}
+
 				this.moves = build();
 			}
 
@@ -151,13 +159,13 @@ public class TelekineticRoom extends MTARoom
 	{
 		Projectile projectile = event.getProjectile();
 
-		if (projectile.getId() == ProjectileID.TELEKINETIC_SPELL)
+		if (valid)
 		{
-			if (validatePosition(moves.peek()))
-			{
-				moves.pop();
-			}
-			else
+			moves.pop();
+		}
+		else
+		{
+			if (projectile.getId() == ProjectileID.TELEKINETIC_SPELL)
 			{
 				Direction mine = getPosition();
 
@@ -250,16 +258,17 @@ public class TelekineticRoom extends MTARoom
 		Direction next = moves.pop();
 		WorldArea areaNext = getIndicatorLine(next);
 		WorldPoint nearestNext = nearest(areaNext, current);
-		int ticks = manhattan(nearestNext, current) / 2;
-		int ticksGuard = manhattan(guardian.getWorldLocation(),
-				WorldPoint.fromLocal(client, neighbour(guardian.getLocalLocation(), next)));
-		if (ticks <= ticksGuard)
+
+		if (moves.isEmpty())
 		{
+			moves.push(next);
+
 			return nearestNext;
 		}
 
-
-		WorldArea areaAfter = getIndicatorLine(moves.peek());
+		Direction after = moves.peek();
+		moves.push(next);
+		WorldArea areaAfter = getIndicatorLine(after);
 		WorldPoint nearestAfter = nearest(areaAfter, nearestNext);
 
 		return nearest(areaNext, nearestAfter);
@@ -347,6 +356,11 @@ public class TelekineticRoom extends MTARoom
 
 			for (LocalPoint neighbour : neighbours)
 			{
+				if (neighbour == null)
+				{
+					continue;
+				}
+
 				WorldPoint nghbWorld = WorldPoint.fromLocal(client, neighbour);
 
 				if (!nghbWorld.equals(next)
@@ -410,6 +424,11 @@ public class TelekineticRoom extends MTARoom
 
 	private LocalPoint neighbour(LocalPoint point, Direction direction)
 	{
+		if (point == null)
+		{
+			return null;
+		}
+
 		int dx = 0, dy = 0;
 
 		switch (direction)
