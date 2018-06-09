@@ -188,8 +188,8 @@ public class WorldArea
 	 * {@link #canTravelInDirection(Client, int, int, Predicate)} method.
 	 *
 	 * @param client the client to test in
-	 * @param dx the x-axis direction to travel (-1, 0, or 1)
-	 * @param dy the y-axis direction to travel (-1, 0, or 1)
+	 * @param dx     the x-axis direction to travel (-1, 0, or 1)
+	 * @param dy     the y-axis direction to travel (-1, 0, or 1)
 	 * @return true if the area can travel in the specified direction
 	 */
 	public boolean canTravelInDirection(Client client, int dx, int dy)
@@ -209,9 +209,9 @@ public class WorldArea
 	 * with some actors. However, using the {@code extraCondition} param
 	 * it is possible to implement this check manually.
 	 *
-	 * @param client the client to test in
-	 * @param dx the x-axis direction to travel (-1, 0, or 1)
-	 * @param dy the y-axis direction to travel (-1, 0, or 1)
+	 * @param client         the client to test in
+	 * @param dx             the x-axis direction to travel (-1, 0, or 1)
+	 * @param dy             the y-axis direction to travel (-1, 0, or 1)
 	 * @param extraCondition an additional condition to perform when checking valid tiles,
 	 *                       such as performing a check for un-passable actors
 	 * @return true if the area can travel in the specified direction
@@ -248,33 +248,33 @@ public class WorldArea
 		{
 			xFlags |= CollisionDataFlag.BLOCK_MOVEMENT_EAST;
 			xWallFlagsSouth |= CollisionDataFlag.BLOCK_MOVEMENT_SOUTH |
-				CollisionDataFlag.BLOCK_MOVEMENT_SOUTH_EAST;
+					CollisionDataFlag.BLOCK_MOVEMENT_SOUTH_EAST;
 			xWallFlagsNorth |= CollisionDataFlag.BLOCK_MOVEMENT_NORTH |
-				CollisionDataFlag.BLOCK_MOVEMENT_NORTH_EAST;
+					CollisionDataFlag.BLOCK_MOVEMENT_NORTH_EAST;
 		}
 		if (dx > 0)
 		{
 			xFlags |= CollisionDataFlag.BLOCK_MOVEMENT_WEST;
 			xWallFlagsSouth |= CollisionDataFlag.BLOCK_MOVEMENT_SOUTH |
-				CollisionDataFlag.BLOCK_MOVEMENT_SOUTH_WEST;
+					CollisionDataFlag.BLOCK_MOVEMENT_SOUTH_WEST;
 			xWallFlagsNorth |= CollisionDataFlag.BLOCK_MOVEMENT_NORTH |
-				CollisionDataFlag.BLOCK_MOVEMENT_NORTH_WEST;
+					CollisionDataFlag.BLOCK_MOVEMENT_NORTH_WEST;
 		}
 		if (dy < 0)
 		{
 			yFlags |= CollisionDataFlag.BLOCK_MOVEMENT_NORTH;
 			yWallFlagsWest |= CollisionDataFlag.BLOCK_MOVEMENT_WEST |
-				CollisionDataFlag.BLOCK_MOVEMENT_NORTH_WEST;
+					CollisionDataFlag.BLOCK_MOVEMENT_NORTH_WEST;
 			yWallFlagsEast |= CollisionDataFlag.BLOCK_MOVEMENT_EAST |
-				CollisionDataFlag.BLOCK_MOVEMENT_NORTH_EAST;
+					CollisionDataFlag.BLOCK_MOVEMENT_NORTH_EAST;
 		}
 		if (dy > 0)
 		{
 			yFlags |= CollisionDataFlag.BLOCK_MOVEMENT_SOUTH;
 			yWallFlagsWest |= CollisionDataFlag.BLOCK_MOVEMENT_WEST |
-				CollisionDataFlag.BLOCK_MOVEMENT_SOUTH_WEST;
+					CollisionDataFlag.BLOCK_MOVEMENT_SOUTH_WEST;
 			yWallFlagsEast |= CollisionDataFlag.BLOCK_MOVEMENT_EAST |
-				CollisionDataFlag.BLOCK_MOVEMENT_SOUTH_EAST;
+					CollisionDataFlag.BLOCK_MOVEMENT_SOUTH_EAST;
 		}
 		if (dx < 0 && dy < 0)
 		{
@@ -302,7 +302,7 @@ public class WorldArea
 			for (int y = startY; y <= endY; y++)
 			{
 				if ((collisionDataFlags[checkX][y] & xFlags) != 0 ||
-					!extraCondition.test(WorldPoint.fromRegion(client, checkX, y, plane)))
+						!extraCondition.test(WorldPoint.fromRegion(client, checkX, y, plane)))
 				{
 					// Collision while attempting to travel along the x axis
 					return false;
@@ -333,7 +333,7 @@ public class WorldArea
 			for (int x = startX; x <= endX; x++)
 			{
 				if ((collisionDataFlags[x][checkY] & yFlags) != 0 ||
-					!extraCondition.test(WorldPoint.fromRegion(client, x, checkY, client.getPlane())))
+						!extraCondition.test(WorldPoint.fromRegion(client, x, checkY, client.getPlane())))
 				{
 					// Collision while attempting to travel along the y axis
 					return false;
@@ -361,7 +361,7 @@ public class WorldArea
 		if (dx != 0 && dy != 0)
 		{
 			if ((collisionDataFlags[checkX][checkY] & xyFlags) != 0 ||
-				!extraCondition.test(WorldPoint.fromRegion(client, checkX, checkY, client.getPlane())))
+					!extraCondition.test(WorldPoint.fromRegion(client, checkX, checkY, client.getPlane())))
 			{
 				// Collision while attempting to travel diagonally
 				return false;
@@ -373,7 +373,7 @@ public class WorldArea
 			if (width == 1)
 			{
 				if ((collisionDataFlags[checkX][checkY - dy] & xFlags) != 0 &&
-					extraCondition.test(WorldPoint.fromRegion(client, checkX, startY, client.getPlane())))
+						extraCondition.test(WorldPoint.fromRegion(client, checkX, startY, client.getPlane())))
 				{
 					return false;
 				}
@@ -381,7 +381,7 @@ public class WorldArea
 			if (height == 1)
 			{
 				if ((collisionDataFlags[checkX - dx][checkY] & yFlags) != 0 &&
-					extraCondition.test(WorldPoint.fromRegion(client, startX, checkY, client.getPlane())))
+						extraCondition.test(WorldPoint.fromRegion(client, startX, checkY, client.getPlane())))
 				{
 					return false;
 				}
@@ -431,13 +431,13 @@ public class WorldArea
 	 * Calculates the next area that will be occupied if this area attempts
 	 * to move toward it by using the normal NPC travelling pattern.
 	 *
-	 * @param client the client to calculate with
-	 * @param target the target area
+	 * @param client              the client to calculate with
+	 * @param target              the target area
 	 * @param stopAtMeleeDistance whether to stop at melee distance to the target
 	 * @return the next occupied area
 	 */
 	public WorldArea calculateNextTravellingPoint(Client client, WorldArea target,
-		boolean stopAtMeleeDistance)
+												  boolean stopAtMeleeDistance)
 	{
 		return calculateNextTravellingPoint(client, target, stopAtMeleeDistance, x -> true);
 	}
@@ -446,15 +446,15 @@ public class WorldArea
 	 * Calculates the next area that will be occupied if this area attempts
 	 * to move toward it by using the normal NPC travelling pattern.
 	 *
-	 * @param client the client to calculate with
-	 * @param target the target area
+	 * @param client              the client to calculate with
+	 * @param target              the target area
 	 * @param stopAtMeleeDistance whether to stop at melee distance to the target
-	 * @param extraCondition an additional condition to perform when checking valid tiles,
-	 * 	                     such as performing a check for un-passable actors
+	 * @param extraCondition      an additional condition to perform when checking valid tiles,
+	 *                            such as performing a check for un-passable actors
 	 * @return the next occupied area
 	 */
 	public WorldArea calculateNextTravellingPoint(Client client, WorldArea target,
-		boolean stopAtMeleeDistance, Predicate<? super WorldPoint> extraCondition)
+												  boolean stopAtMeleeDistance, Predicate<? super WorldPoint> extraCondition)
 	{
 		if (plane != target.getPlane())
 		{
@@ -485,8 +485,8 @@ public class WorldArea
 
 		LocalPoint lp = LocalPoint.fromWorld(client, x, y);
 		if (lp == null ||
-			lp.getRegionX() + dx < 0 || lp.getRegionX() + dy >= Constants.REGION_SIZE ||
-			lp.getRegionY() + dx < 0 || lp.getRegionY() + dy >= Constants.REGION_SIZE)
+				lp.getRegionX() + dx < 0 || lp.getRegionX() + dy >= Constants.REGION_SIZE ||
+				lp.getRegionY() + dx < 0 || lp.getRegionY() + dy >= Constants.REGION_SIZE)
 		{
 			// NPC is travelling out of region, so collision data isn't available
 			return null;
@@ -515,7 +515,7 @@ public class WorldArea
 				return new WorldArea(x + dxSig, y, width, height, plane);
 			}
 			else if (dy != 0 && Math.max(Math.abs(dx), Math.abs(dy)) > 1 &&
-				this.canTravelInDirection(client, 0, dy, extraCondition))
+					this.canTravelInDirection(client, 0, dy, extraCondition))
 			{
 				// Note that NPCs don't attempts to travel along the y-axis
 				// if the target is <= 1 tile distance away
@@ -534,7 +534,7 @@ public class WorldArea
 	 * while the other WorldArea does not have line of sight to this WorldArea.
 	 *
 	 * @param client The client to compare in
-	 * @param other The other WorldArea to compare with
+	 * @param other  The other WorldArea to compare with
 	 * @return Returns true if this WorldArea has line of sight to the other
 	 */
 	public boolean hasLineOfSightTo(Client client, WorldArea other)
@@ -627,7 +627,7 @@ public class WorldArea
 	 * while the other WorldArea does not have line of sight to this WorldArea.
 	 *
 	 * @param client The client to compare in
-	 * @param other The other WorldPoint to compare with
+	 * @param other  The other WorldPoint to compare with
 	 * @return Returns true if this WorldPoint has line of sight to the WorldPoint
 	 */
 	public boolean hasLineOfSightTo(Client client, WorldPoint other)

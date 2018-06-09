@@ -44,7 +44,6 @@ import net.runelite.api.NPC;
 import net.runelite.api.NpcID;
 import net.runelite.api.ObjectID;
 import net.runelite.api.Perspective;
-import net.runelite.api.Player;
 import net.runelite.api.Projectile;
 import net.runelite.api.ProjectileID;
 import net.runelite.api.WallObject;
@@ -221,29 +220,6 @@ public class TelekineticRoom extends MTARoom
 					graphics2D.setColor(Color.RED);
 				}
 
-				WorldArea area = getIndicatorLine(moves.peek());
-
-				if (area != null)
-				{
-					double nearestDist = Double.MAX_VALUE;
-					Player local = client.getLocalPlayer();
-
-					for (WorldPoint point : area.toWorldPointList())
-					{
-						LocalPoint converted = LocalPoint.fromWorld(client, point);
-
-						if (converted != null)
-						{
-							double dist = local.getLocalLocation().distanceTo(converted);
-
-							if (nearest == null || dist < nearestDist)
-							{
-								nearest = point;
-								nearestDist = dist;
-							}
-						}
-					}
-				}
 
 				Polygon tile = Perspective.getCanvasTilePoly(client, guardian.getLocalLocation());
 				if (tile != null)
@@ -251,28 +227,65 @@ public class TelekineticRoom extends MTARoom
 					graphics2D.drawPolygon(tile);
 				}
 
-				if (getConfig().telekineticLines() && area != null)
-				{
-					for (WorldPoint point : area.toWorldPointList())
-					{
-						if (getConfig().telekineticLines())
-						{
-							renderWorldPoint(graphics2D, point);
-						}
-					}
-				}
 
-				if (nearest != null)
+				WorldPoint optimal = optimal();
+
+				if (optimal != null)
 				{
 					if (getConfig().mtaHintArrows())
 					{
-						client.setHintArrow(nearest);
+						client.setHintArrow(optimal);
 					}
 
-					renderWorldPoint(graphics2D, nearest);
+					renderWorldPoint(graphics2D, optimal);
 				}
 			}
 		}
+	}
+
+	private WorldPoint optimal()
+	{
+		WorldPoint current = client.getLocalPlayer().getWorldLocation();
+
+		Direction next = moves.pop();
+		WorldArea areaNext = getIndicatorLine(next);
+		WorldPoint nearestNext = nearest(areaNext, current);
+		int ticks = manhattan(nearestNext, current) / 2;
+		int ticksGuard = manhattan(guardian.getWorldLocation(),
+				WorldPoint.fromLocal(client, neighbour(guardian.getLocalLocation(), next)));
+		if (ticks <= ticksGuard)
+		{
+			return nearestNext;
+		}
+
+
+		WorldArea areaAfter = getIndicatorLine(moves.peek());
+		WorldPoint nearestAfter = nearest(areaAfter, nearestNext);
+
+		return nearest(areaNext, nearestAfter);
+	}
+
+	private int manhattan(WorldPoint point1, WorldPoint point2)
+	{
+		return Math.abs(point1.getX() - point2.getX()) + Math.abs(point2.getY() - point1.getY());
+	}
+
+	private WorldPoint nearest(WorldArea area, WorldPoint worldPoint)
+	{
+		int dist = Integer.MAX_VALUE;
+		WorldPoint nearest = null;
+
+		for (WorldPoint areaPoint : area.toWorldPointList())
+		{
+			int currDist = manhattan(areaPoint, worldPoint);
+			if (nearest == null || dist > currDist)
+			{
+				nearest = areaPoint;
+				dist = currDist;
+			}
+		}
+
+		return nearest;
 	}
 
 
