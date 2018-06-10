@@ -98,6 +98,7 @@ public class WidgetID
 	public static final int MTA_ENCHANTMENT_GROUP_ID = 195;
 	public static final int MTA_GRAVEYARD_GROUP_ID = 196;
 	public static final int MTA_TELEKINETIC_GROUP_ID = 198;
+	public static final int BLAST_MINE_GROUP_ID = 598;
 
 	static class WorldMap
 	{
