@@ -195,7 +195,10 @@ public class AlchemyRoom extends MTARoom
 			if (message.contains(YOU_FOUND))
 			{
 				String item = message.replace(YOU_FOUND, "").trim();
-				fill(getClicked(), item);
+				if (!item.equalsIgnoreCase(locations[getClicked()].toString()))
+				{
+					fill(getClicked(), item);
+				}
 			}
 			else if (message.equals(EMPTY))
 			{
@@ -204,24 +207,12 @@ public class AlchemyRoom extends MTARoom
 		}
 	}
 
-	private void reset()
-	{
-		reset(false);
-	}
 
-	private void reset(boolean logout)
+	private void reset()
 	{
 		for (int i = 0; i < locations.length; i++)
 		{
 			locations[i] = AlchemyItem.UNKNOWN;
-		}
-
-		if (logout)
-		{
-			for (int i = 0; i < cupboards.size(); i++)
-			{
-				cupboards.set(i, null);
-			}
 		}
 	}
 
