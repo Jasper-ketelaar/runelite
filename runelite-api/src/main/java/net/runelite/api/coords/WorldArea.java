@@ -436,8 +436,7 @@ public class WorldArea
 	 * @param stopAtMeleeDistance whether to stop at melee distance to the target
 	 * @return the next occupied area
 	 */
-	public WorldArea calculateNextTravellingPoint(Client client, WorldArea target,
-												  boolean stopAtMeleeDistance)
+	public WorldArea calculateNextTravellingPoint(Client client, WorldArea target, boolean stopAtMeleeDistance)
 	{
 		return calculateNextTravellingPoint(client, target, stopAtMeleeDistance, x -> true);
 	}
@@ -453,8 +452,7 @@ public class WorldArea
 	 *                            such as performing a check for un-passable actors
 	 * @return the next occupied area
 	 */
-	public WorldArea calculateNextTravellingPoint(Client client, WorldArea target,
-												  boolean stopAtMeleeDistance, Predicate<? super WorldPoint> extraCondition)
+	public WorldArea calculateNextTravellingPoint(Client client, WorldArea target, boolean stopAtMeleeDistance, Predicate<? super WorldPoint> extraCondition)
 	{
 		if (plane != target.getPlane())
 		{
