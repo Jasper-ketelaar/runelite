@@ -22,46 +22,57 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.mta;
+package net.runelite.client.plugins.mta.alchemy;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.time.temporal.ChronoUnit;
-import javax.imageio.ImageIO;
-import net.runelite.client.plugins.Plugin;
-import net.runelite.client.plugins.kourendlibrary.KourendLibraryPlugin;
-import net.runelite.client.ui.overlay.infobox.Timer;
+import lombok.Getter;
+import net.runelite.api.ItemID;
 
-public class AlchemyRoomTimer extends Timer
+public enum AlchemyItem
 {
-	private static final int RESET_PERIOD = 45;
-	private static BufferedImage image;
+	LEATHER_BOOTS("Leather Boots", "Leather boots", ItemID.LEATHER_BOOTS),
+	ADAMANT_KITESHIELD("Adamant Kiteshield", "Adamant kiteshield", ItemID.ADAMANT_KITESHIELD),
+	ADAMANT_MED_HELM("Adamant Helm", "helm", ItemID.ADAMANT_MED_HELM),
+	EMERALD("Emerald", ItemID.EMERALD),
+	RUNE_LONGSWORD("Rune Longsword", "Rune longsword", ItemID.RUNE_LONGSWORD),
+	EMPTY("", -1),
+	UNKNOWN("Unknown", ItemID.CAKE_OF_GUIDANCE);
 
-	public AlchemyRoomTimer(Plugin plugin)
+	@Getter
+	private final int id;
+	@Getter
+	private final String name;
+	private final String sanitized;
+
+	AlchemyItem(String name, int id)
 	{
-		super(RESET_PERIOD, ChronoUnit.SECONDS, getResetImage(), plugin);
-		this.setTooltip("Time until items swap");
+		this(name, name, id);
 	}
 
-	private static BufferedImage getResetImage()
+	AlchemyItem(String sanitized, String name, int id)
 	{
-		if (image != null)
-		{
-			return image;
-		}
+		this.id = id;
+		this.name = name;
+		this.sanitized = sanitized;
+	}
 
-		try
+	public static int indexOf(String item)
+	{
+		AlchemyItem[] items = values();
+
+		for (int i = 0; i < items.length; i++)
 		{
-			synchronized (ImageIO.class)
+			if (item.contains(items[i].getName()))
 			{
-				image = ImageIO.read(KourendLibraryPlugin.class.getResourceAsStream("reset.png"));
+				return i;
 			}
 		}
-		catch (IOException ex)
-		{
-			ex.printStackTrace();
-		}
 
-		return image;
+		return -1;
+	}
+
+	@Override
+	public String toString()
+	{
+		return sanitized;
 	}
 }

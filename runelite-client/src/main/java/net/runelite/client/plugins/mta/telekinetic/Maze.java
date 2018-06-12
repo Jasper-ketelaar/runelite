@@ -22,62 +22,52 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.mta;
+package net.runelite.client.plugins.mta.telekinetic;
 
-import lombok.Getter;
-import net.runelite.api.ItemID;
+import net.runelite.api.coords.LocalPoint;
 
-public enum AlchemyItem
+public enum Maze
 {
-	LEATHER_BOOTS("Leather boots", ItemID.LEATHER_BOOTS),
-	ADAMANT_KITESHIELD("Adamant kiteshield", ItemID.ADAMANT_KITESHIELD),
-	ADAMANT_MED_HELM("helm", ItemID.ADAMANT_MED_HELM),
-	EMERALD("Emerald", ItemID.EMERALD),
-	RUNE_LONGSWORD("Rune longsword", ItemID.RUNE_LONGSWORD),
-	EMPTY("", -1),
-	UNKNOWN("Unknown", ItemID.CAKE_OF_GUIDANCE);
+	MAZE_1(100, new LocalPoint(6848, 3904)),
+	MAZE_2(124, new LocalPoint(4928, 6848)),
+	MAZE_3(129, new LocalPoint(7104, 5312)),
+	MAZE_4(53, new LocalPoint(6208, 4928)),
+	MAZE_5(108, new LocalPoint(5056, 5184)),
+	MAZE_6(121, new LocalPoint(3648, 5440)),
+	MAZE_7(71, new LocalPoint(6080, 5696)),
+	MAZE_8(98, new LocalPoint(5952, 7360)),
+	MAZE_9(87, new LocalPoint(5184, 6208)),
+	MAZE_10(91, new LocalPoint(5440, 9024));
 
-	@Getter
-	private final int id;
-	@Getter
-	private final String name;
+	private final int walls;
+	private final LocalPoint start;
 
-	AlchemyItem(String name, int id)
+	Maze(int walls, LocalPoint start)
 	{
-		this.id = id;
-		this.name = name;
+		this.walls = walls;
+		this.start = start;
 	}
 
-	public static int indexOf(String item)
+	public static Maze fromWalls(int walls)
 	{
-		AlchemyItem[] items = values();
-
-		for (int i = 0; i < items.length; i++)
+		for (Maze maze : values())
 		{
-			if (item.contains(items[i].getName()))
+			if (maze.getWalls() == walls)
 			{
-				return i;
+				return maze;
 			}
 		}
 
-		return -1;
+		return null;
 	}
 
-	@Override
-	public String toString()
+	public int getWalls()
 	{
-		String text = getName();
+		return walls;
+	}
 
-		if (text.equals("helm"))
-		{
-			return "Adamant Helm";
-		}
-		else if (text.contains(" "))
-		{
-			String[] parts = text.split(" ");
-			return parts[0] + " " + parts[1].substring(0, 1).toUpperCase() + parts[1].substring(1);
-		}
-
-		return text;
+	public LocalPoint getStart()
+	{
+		return start;
 	}
 }

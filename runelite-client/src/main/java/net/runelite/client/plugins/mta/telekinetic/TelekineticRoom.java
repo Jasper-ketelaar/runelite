@@ -22,7 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.mta;
+package net.runelite.client.plugins.mta.telekinetic;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -59,6 +59,8 @@ import net.runelite.api.events.ProjectileMoved;
 import net.runelite.api.queries.GroundObjectQuery;
 import net.runelite.api.queries.WallObjectQuery;
 import net.runelite.api.widgets.WidgetID;
+import net.runelite.client.plugins.mta.MTAConfig;
+import net.runelite.client.plugins.mta.MTARoom;
 
 public class TelekineticRoom extends MTARoom
 {

@@ -22,7 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.mta;
+package net.runelite.client.plugins.mta.graveyard;
 
 import java.awt.image.BufferedImage;
 import javax.inject.Inject;
@@ -38,6 +38,9 @@ import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetID;
 import net.runelite.client.game.ItemManager;
+import net.runelite.client.plugins.mta.MTAConfig;
+import net.runelite.client.plugins.mta.MTAPlugin;
+import net.runelite.client.plugins.mta.MTARoom;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 
 public class GraveyardRoom extends MTARoom

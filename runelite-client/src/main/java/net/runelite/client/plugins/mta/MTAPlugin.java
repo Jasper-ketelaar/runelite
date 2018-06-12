@@ -41,6 +41,10 @@ import net.runelite.api.widgets.WidgetItem;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.mta.alchemy.AlchemyRoom;
+import net.runelite.client.plugins.mta.enchantment.EnchantmentRoom;
+import net.runelite.client.plugins.mta.graveyard.GraveyardRoom;
+import net.runelite.client.plugins.mta.telekinetic.TelekineticRoom;
 import net.runelite.client.ui.overlay.Overlay;
 
 

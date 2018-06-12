@@ -22,7 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.mta;
+package net.runelite.client.plugins.mta.alchemy;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -50,6 +50,9 @@ import net.runelite.api.widgets.WidgetID;
 import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.api.widgets.WidgetItem;
 import net.runelite.client.game.ItemManager;
+import net.runelite.client.plugins.mta.MTAConfig;
+import net.runelite.client.plugins.mta.MTAPlugin;
+import net.runelite.client.plugins.mta.MTARoom;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 
 public class AlchemyRoom extends MTARoom
@@ -366,7 +369,8 @@ public class AlchemyRoom extends MTARoom
 
 					if (composition != null && composition.getName().equalsIgnoreCase(temp))
 					{
-						plugin.drawItem(graphics, item, Color.GREEN, MTAPlugin.TRANSPARENT_GREEN);
+						graphics.setColor(Color.GREEN);
+						graphics.draw(item.getCanvasBounds());
 					}
 				}
 			}

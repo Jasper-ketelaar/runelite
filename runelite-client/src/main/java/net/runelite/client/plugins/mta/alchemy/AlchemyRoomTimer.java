@@ -22,52 +22,46 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.mta;
+package net.runelite.client.plugins.mta.alchemy;
 
-import net.runelite.api.coords.LocalPoint;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.time.temporal.ChronoUnit;
+import javax.imageio.ImageIO;
+import net.runelite.client.plugins.Plugin;
+import net.runelite.client.plugins.kourendlibrary.KourendLibraryPlugin;
+import net.runelite.client.ui.overlay.infobox.Timer;
 
-public enum Maze
+public class AlchemyRoomTimer extends Timer
 {
-	MAZE_1(100, new LocalPoint(6848, 3904)),
-	MAZE_2(124, new LocalPoint(4928, 6848)),
-	MAZE_3(129, new LocalPoint(7104, 5312)),
-	MAZE_4(53, new LocalPoint(6208, 4928)),
-	MAZE_5(108, new LocalPoint(5056, 5184)),
-	MAZE_6(121, new LocalPoint(3648, 5440)),
-	MAZE_7(71, new LocalPoint(6080, 5696)),
-	MAZE_8(98, new LocalPoint(5952, 7360)),
-	MAZE_9(87, new LocalPoint(5184, 6208)),
-	MAZE_10(91, new LocalPoint(5440, 9024));
+	private static final int RESET_PERIOD = 45;
+	private static BufferedImage image;
 
-	private final int walls;
-	private final LocalPoint start;
-
-	Maze(int walls, LocalPoint start)
+	public AlchemyRoomTimer(Plugin plugin)
 	{
-		this.walls = walls;
-		this.start = start;
+		super(RESET_PERIOD, ChronoUnit.SECONDS, getResetImage(), plugin);
+		this.setTooltip("Time until items swap");
 	}
 
-	public static Maze fromWalls(int walls)
+	private static BufferedImage getResetImage()
 	{
-		for (Maze maze : values())
+		if (image != null)
 		{
-			if (maze.getWalls() == walls)
-			{
-				return maze;
-			}
+			return image;
 		}
 
-		return null;
-	}
+		try
+		{
+			synchronized (ImageIO.class)
+			{
+				image = ImageIO.read(KourendLibraryPlugin.class.getResourceAsStream("reset.png"));
+			}
+		}
+		catch (IOException ex)
+		{
+			ex.printStackTrace();
+		}
 
-	public int getWalls()
-	{
-		return walls;
-	}
-
-	public LocalPoint getStart()
-	{
-		return start;
+		return image;
 	}
 }

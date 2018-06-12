@@ -31,7 +31,7 @@ import lombok.Getter;
 
 public abstract class MTARoom
 {
-	@Getter(AccessLevel.PACKAGE)
+	@Getter(AccessLevel.PUBLIC)
 	private final MTAConfig config;
 
 	@Inject
