@@ -47,6 +47,7 @@ import net.runelite.api.Perspective;
 import net.runelite.api.Projectile;
 import net.runelite.api.ProjectileID;
 import net.runelite.api.WallObject;
+import net.runelite.api.coords.Angle;
 import net.runelite.api.coords.Direction;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldArea;
@@ -61,6 +62,9 @@ import net.runelite.api.widgets.WidgetID;
 
 public class TelekineticRoom extends MTARoom
 {
+	private static final int TELEKINETIC_WALL = ObjectID.NULL_10755;
+	private static final int TELEKINETIC_FINISH = ObjectID.NULL_23672;
+
 	private final Client client;
 
 	private Stack<Direction> moves = new Stack<>();
@@ -93,7 +97,7 @@ public class TelekineticRoom extends MTARoom
 		}
 
 		WallObjectQuery qry = new WallObjectQuery()
-				.idEquals(ObjectID.TELEKINETIC_WALL);
+				.idEquals(TELEKINETIC_WALL);
 		WallObject[] result = qry.result(client);
 		int length = result.length;
 
@@ -327,7 +331,8 @@ public class TelekineticRoom extends MTARoom
 
 	private LocalPoint getGuardianDestination()
 	{
-		Direction facing = Direction.fromOrientation(guardian.getOrientation());
+		Angle angle = new Angle(guardian.getOrientation());
+		Direction facing = angle.getNearestDirection();
 		return neighbour(guardian.getLocalLocation(), facing);
 	}
 
@@ -501,7 +506,7 @@ public class TelekineticRoom extends MTARoom
 	private LocalPoint finish()
 	{
 		GroundObjectQuery qry = new GroundObjectQuery()
-				.idEquals(ObjectID.TELEKINETIC_FINISH);
+				.idEquals(TELEKINETIC_FINISH);
 
 		GroundObject[] result = qry.result(client);
 

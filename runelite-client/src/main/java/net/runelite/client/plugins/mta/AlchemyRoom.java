@@ -28,10 +28,10 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;
+import com.google.common.collect.ImmutableList;
 import com.google.common.eventbus.Subscribe;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
@@ -61,7 +61,7 @@ public class AlchemyRoom extends MTARoom
 	private static final int INFO_START = 5;
 	private static final int BEST_POINTS = 30;
 
-	private static final List<Integer> CUPBOARDS = Arrays.asList(ObjectID.CUPBOARD_23678, ObjectID.CUPBOARD_23680,
+	private static final ImmutableList<Integer> CUPBOARDS = ImmutableList.of(ObjectID.CUPBOARD_23678, ObjectID.CUPBOARD_23680,
 			ObjectID.CUPBOARD_23682, ObjectID.CUPBOARD_23684, ObjectID.CUPBOARD_23686, ObjectID.CUPBOARD_23688,
 			ObjectID.CUPBOARD_23690, ObjectID.CUPBOARD_23692);
 	private static final String YOU_FOUND = "You found:";

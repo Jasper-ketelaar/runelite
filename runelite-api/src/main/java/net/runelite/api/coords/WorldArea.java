@@ -650,7 +650,7 @@ public class WorldArea
 	 */
 	public ArrayList<WorldPoint> toWorldPointList()
 	{
-		ArrayList<WorldPoint> list = new ArrayList<>();
+		ArrayList<WorldPoint> list = new ArrayList<>(width * height);
 		for (int x = 0; x < width; x++)
 		{
 			for (int y = 0; y < height; y++)

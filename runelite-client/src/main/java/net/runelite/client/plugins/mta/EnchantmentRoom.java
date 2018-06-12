@@ -25,17 +25,18 @@
 package net.runelite.client.plugins.mta;
 
 import java.awt.image.BufferedImage;
+import java.util.HashSet;
+import java.util.Set;
 import javax.inject.Inject;
 import com.google.common.eventbus.Subscribe;
 import net.runelite.api.Client;
 import net.runelite.api.Item;
 import net.runelite.api.ItemID;
-import net.runelite.api.Player;
-import net.runelite.api.Region;
 import net.runelite.api.Tile;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.ConfigChanged;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.ItemLayerChanged;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetID;
 import net.runelite.api.widgets.WidgetInfo;
@@ -48,6 +49,7 @@ public class EnchantmentRoom extends MTARoom
 
 	private final MTAPlugin plugin;
 	private final Client client;
+	private final Set<WorldPoint> dragonstones = new HashSet<>();
 
 	private BufferedImage image;
 
@@ -74,46 +76,43 @@ public class EnchantmentRoom extends MTARoom
 			setHiddenWidgets(true);
 		}
 
-		Region region = client.getRegion();
-		Tile[][][] tiles = region.getTiles();
-		int z = client.getPlane();
-		int count = 0;
-		Player local = client.getLocalPlayer();
 		WorldPoint nearest = null;
-		double min = Double.MAX_VALUE;
-
-		for (int x = 0; x < tiles[z].length; x++)
+		double dist = Double.MAX_VALUE;
+		WorldPoint local = client.getLocalPlayer().getWorldLocation();
+		for (WorldPoint worldPoint : dragonstones)
 		{
-			for (int y = 0; y < tiles[z][x].length; y++)
+			double currDist = local.distanceTo(worldPoint);
+			if (nearest == null || currDist < dist)
 			{
-				Tile tile = tiles[z][x][y];
-
-				if (tile == null || tile.getGroundItems() == null)
-				{
-					continue;
-				}
-
-				double dist = local.getLocalLocation().distanceTo(tile.getLocalLocation());
-
-				for (Item item : tile.getGroundItems())
-				{
-					if (item.getId() == ItemID.DRAGONSTONE_6903)
-					{
-						if (nearest == null || dist < min)
-						{
-							min = dist;
-							nearest = tile.getWorldLocation();
-						}
-
-						count++;
-					}
-				}
+				dist = currDist;
+				nearest = worldPoint;
 			}
 		}
+
 
 		if (nearest != null)
 		{
 			client.setHintArrow(nearest);
+		}
+	}
+
+	@Subscribe
+	public void onItemLayerChanged(ItemLayerChanged event)
+	{
+		Tile changed = event.getTile();
+		WorldPoint worldPoint = changed.getWorldLocation();
+		for (Item item : changed.getGroundItems())
+		{
+			if (item.getId() == ItemID.DRAGONSTONE_6903)
+			{
+				dragonstones.add(worldPoint);
+				return;
+			}
+		}
+
+		if (dragonstones.contains(worldPoint))
+		{
+			dragonstones.remove(worldPoint);
 		}
 	}
 
