@@ -24,9 +24,13 @@
  */
 package net.runelite.cache.util;
 
+import com.google.gson.Gson;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.Data;
 import net.runelite.http.api.xtea.XteaClient;
 import net.runelite.http.api.xtea.XteaKey;
 import org.slf4j.Logger;
@@ -59,8 +63,27 @@ public class XteaKeyManager
 		logger.info("Loaded {} keys", keys.size());
 	}
 
+	public void loadKeys(File from) throws IOException
+	{
+		Gson gson = new Gson();
+		RegionEntry[] entries = gson.fromJson(new FileReader(from), RegionEntry[].class);
+		for (RegionEntry entry : entries)
+		{
+			keys.put(entry.region, entry.keys);
+		}
+	}
+
 	public int[] getKeys(int region)
 	{
 		return keys.get(region);
+	}
+
+	@Data
+	private class RegionEntry
+	{
+
+		int region;
+		int[] keys;
+
 	}
 }

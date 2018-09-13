@@ -32,6 +32,8 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import net.runelite.cache.definitions.AreaDefinition;
 import net.runelite.cache.fs.Store;
+import net.runelite.cache.region.RegionLoader;
+import net.runelite.cache.util.XteaKeyManager;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -41,11 +43,9 @@ import org.slf4j.LoggerFactory;
 public class AreaDumper
 {
 	private static final Logger logger = LoggerFactory.getLogger(AreaDumper.class);
-
+	private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	@Rule
 	public TemporaryFolder folder = StoreLocation.getTemporaryFolder();
-
-	private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
 	@Test
 	public void extract() throws IOException
@@ -70,5 +70,25 @@ public class AreaDumper
 		}
 
 		logger.info("Dumped {} areas to {}", count, outDir);
+	}
+
+	@Test
+	public void extractWithXteas() throws IOException
+	{
+		File base = StoreLocation.LOCATION,
+			outDir = folder.newFolder();
+
+		File keys = new File(
+			System.getProperty("user.home")
+				+ File.separator + "RegionDumper"
+				+ File.separator + "xtea.json"
+		);
+
+		try (Store store = new Store(base))
+		{
+			store.load();
+			RegionLoader loader = new RegionLoader(store, keys);
+			System.out.println(loader.loadRegionFromArchive(5789).getBaseX());
+		}
 	}
 }

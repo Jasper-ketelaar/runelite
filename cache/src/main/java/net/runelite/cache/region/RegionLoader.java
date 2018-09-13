@@ -24,6 +24,7 @@
  */
 package net.runelite.cache.region;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -63,11 +64,26 @@ public class RegionLoader
 		keyManager.loadKeys();
 	}
 
+	public RegionLoader(Store store, File keys) throws IOException
+	{
+		this.store = store;
+		index = store.getIndex(IndexType.MAPS);
+		keyManager = new XteaKeyManager();
+		keyManager.loadKeys(keys);
+	}
+
 	public void loadRegions() throws IOException
 	{
 		for (int i = 0; i < MAX_REGION; ++i)
 		{
 			Region region = this.loadRegionFromArchive(i);
+			int[] keys = keyManager.getKeys(i);
+			if (keys != null && keys.length > 0
+				&& keys[0] == keys[1] && keys[1] == keys[2] && keys[0] == 0)
+			{
+				continue;
+			}
+
 			if (region != null)
 			{
 				regions.put(i, region);
@@ -76,6 +92,11 @@ public class RegionLoader
 	}
 
 	public Region loadRegionFromArchive(int i) throws IOException
+	{
+		return loadRegionFromArchiveWithKeys(i, keyManager.getKeys(i));
+	}
+
+	public Region loadRegionFromArchiveWithKeys(int i, int[] keys) throws IOException
 	{
 		int x = i >> 8;
 		int y = i & 0xFF;
@@ -98,7 +119,6 @@ public class RegionLoader
 		Region region = new Region(i);
 		region.loadTerrain(mapDef);
 
-		int[] keys = keyManager.getKeys(i);
 		if (keys != null)
 		{
 			try
